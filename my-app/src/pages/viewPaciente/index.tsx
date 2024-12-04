@@ -7,6 +7,6 @@ import {
 
 export default function ViewPaciente(){
     return (
-        <Text>Olá mundo! view Paciente</Text>
+        <Text>Olá mundo! view Paciente!</Text>
     )
 }
