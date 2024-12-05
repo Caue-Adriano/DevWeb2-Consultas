@@ -21,10 +21,6 @@ export const Style = StyleSheet.create({
         fontWeight: 'bold',
         fontSize: 16
     },
-    subtitleText:{
-        fontWeight: 'bold',
-        fontSize: 12
-    },
     inputText:{
     fontWeight: 'bold',
     fontSize: 12
@@ -96,18 +92,6 @@ export const Style = StyleSheet.create({
         paddingHorizontal: 10,
         paddingVertical: 0,
      },
-     boxInputLEstado:{
-        width: '100%',
-        height: 40,
-        borderWidth:9,
-        borderRadius: 10,
-        marginTop: -4,
-        flexDirection: "row",
-        alignItems: 'center',
-        paddingHorizontal: 0,
-        paddingVertical: 20,
-        marginLeft: -15
-     },
     radioGroup:{
         flexDirection: 'row',
         justifyContent: 'space-around',
@@ -149,11 +133,11 @@ export const Style = StyleSheet.create({
         height: 105,
         width:'100%',
     },
-    rqeu:{
+    especialidadeu:{
         height: 105,
         width:'100%',
     },
-    rqed:{
+    especialidaded:{
         height: 145,
         width:'100%'
     }, 
