@@ -54,5 +54,8 @@ export const Style = StyleSheet.create({
         fontSize: 16,
         color:'white',
         textAlign:'center'
+    },
+    containerScroll: { 
+        flex: 1,
     }
 })
