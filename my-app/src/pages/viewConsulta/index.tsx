@@ -12,14 +12,16 @@ export default function ViewConsulta(){
 
     const DATA = [
         {
-          nome: "Cauê de Freitas Adriano",
-          sexo: "Masculino",
-          crm: "5742 - SC"
+          nomePaciente: "Cauê de Freitas Adriano",
+          nomeMedico: "Dr. Luiz Oliveira",
+          data: "05/01/2025",
+          hora: "14:30"
         },
         {
-          nome: "Aline Nunes",
-          sexo: "Feminino",
-          crm: "9999 - SC"
+          nomePaciente: "Aline Nunes",
+          nomeMedico: "Dr. Luiz Oliveira",
+          data: "05/01/2025",
+          hora: "14:35"
         },
       ];
 
@@ -32,12 +34,12 @@ export default function ViewConsulta(){
                         <View style={Style.box}>
                             <View style={Style.boxL}>
                                 <View style={Style.boxLUP}>
-                                    <Text style={Style.text}>{item.nome}</Text>
-                                    <Text style={Style.textGray}>{item.sexo}</Text>
+                                    <Text style={Style.text}>{item.nomePaciente}</Text>
+                                    <Text style={Style.textGray}>{item.nomeMedico}</Text>
                                 </View>
                                 <View style={Style.boxLDown}>
-                                    <Text style={Style.textGray}>CRM</Text>
-                                    <Text style={Style.text}>{item.crm}</Text>
+                                    <Text style={Style.textGray}>Data</Text>
+                                    <Text style={Style.text}>{item.data}</Text>
                                 </View>
                             </View>
                             <View style={Style.boxR}>
@@ -45,9 +47,8 @@ export default function ViewConsulta(){
                                     <Text style={Style.text}>ID</Text>
                                 </View>
                                 <View style={Style.boxRDown}>
-                                    <Text style={Style.textGray}>Especialidades:</Text>
-                                    <Text style={Style.text}>Geriatra</Text>
-                                    <Text style={Style.text}>Cardiologista</Text>
+                                    <Text style={Style.textGray}>Horário:</Text>
+                                    <Text style={Style.text}>{item.hora}</Text>
                                 </View>
                                 
                             </View>

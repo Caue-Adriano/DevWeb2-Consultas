@@ -36,7 +36,7 @@ import { Style } from "./styles";
             <View style={Style.box}>
 
                 <View style= {Style.nome}> 
-                    <Text style={Style.titleText}>Nome completo</Text>
+                    <Text style={Style.titleText}>Nome completo*</Text>
                     <View style={Style.boxInput}>
                         <TextInput 
                             style={Style.input}
@@ -45,7 +45,7 @@ import { Style } from "./styles";
                 </View>
 
                 <View style= {Style.sexo}>
-                    <Text style={Style.titleText}>Sexo</Text>
+                    <Text style={Style.titleText}>Sexo*</Text>
                     <View style={Style.radioGroup}>
                         <RadioButton 
                         label="Masculino" selected={sexo === 'Masculino'}
@@ -59,7 +59,7 @@ import { Style } from "./styles";
                 </View>
 
                 <View style= {Style.cpf}>
-                    <Text style={Style.titleText}>CPF</Text>
+                    <Text style={Style.titleText}>CPF*</Text>
                     <View style={Style.boxInput}>
                         <TextInputMask type={'cpf'} value={cpf} 
                         onChangeText={text => setCpf(text)} 
@@ -70,7 +70,7 @@ import { Style } from "./styles";
                 </View>
 
                 <View style= {Style.endereco}>
-                    <Text style={Style.titleText}>Endereço</Text>
+                    <Text style={Style.titleText}>Endereço*</Text>
                     <View style={Style.boxInput}>
                         <TextInput 
                             style={Style.input}
@@ -79,7 +79,7 @@ import { Style } from "./styles";
                 </View>
 
                 <View style= {Style.dataN}>
-                    <Text style={Style.titleText}>Data de nascimento</Text>
+                    <Text style={Style.titleText}>Data de nascimento*</Text>
                     <View style={Style.boxInput}>
                         <TextInputMask type={'datetime'} options={{ 
                             format: 'DD/MM/YYYY' }} 
@@ -93,7 +93,7 @@ import { Style } from "./styles";
                 
 
                 <View style= {Style.telefone}>
-                    <Text style={Style.titleText}>Telefone</Text>
+                    <Text style={Style.titleText}>Telefone*</Text>
                     <View style={Style.boxInput}>
                         <TextInputMask type={'cel-phone'} 
                         options={{ 

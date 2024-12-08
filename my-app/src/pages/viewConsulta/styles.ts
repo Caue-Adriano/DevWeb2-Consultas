@@ -53,7 +53,7 @@ export const Style = StyleSheet.create({
         // backgroundColor:'yellow',
         width:'100%',
         height:'auto',
-        marginTop: 10
+        marginTop: 25
     },
     text:{
         fontWeight: 'bold',
