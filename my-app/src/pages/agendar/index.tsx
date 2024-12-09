@@ -17,14 +17,14 @@ export default function Agendar() {
     const [paciente_id, setPaciente] = useState('');
 
     const handleSubmit = async () => {
-        // Validação simples
+        
         if (!data_consulta || !doctor_id || !paciente_id) {
             Alert.alert('Erro', 'Por favor, preencha todos os campos.');
             return;
         }
 
         try {
-            // Convertendo a data para o formato ISO 8601
+            
             const [day, month, year] = data_consulta.split('/');
             if (!day || !month || !year || isNaN(new Date(`${year}-${month}-${day}T10:00:00Z`).getTime())) {
                 Alert.alert('Erro', 'Data inválida.');
@@ -33,7 +33,7 @@ export default function Agendar() {
 
             const formattedDate = `${year}-${month}-${day}T10:00:00Z`;
 
-            const response = await axios.post('http://192.168.0.100:4000/consulta', {
+            const response = await axios.post('http://192.168.0.6:4000/consulta', {
                 data_consulta: formattedDate,
                 doctor_id: Number(doctor_id),
                 paciente_id: Number(paciente_id),
