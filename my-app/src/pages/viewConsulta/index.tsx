@@ -1,11 +1,15 @@
 import React from "react";
 import { FlashList } from "@shopify/flash-list";
 import { Style } from "./styles";
+import { ActionModal } from "./actionModal";
+import { useState } from "react";
 
 import {
     Text,
     View,
-    StatusBar
+    StatusBar,
+    TouchableOpacity,
+    Modal
 } from 'react-native';
 
 export default function ViewConsulta(){
@@ -24,6 +28,8 @@ export default function ViewConsulta(){
           hora: "14:35"
         },
       ];
+    
+    const [visibleModal, setVisibleModal] = useState(false);
 
     return (
         <View style={Style.container}>
@@ -31,7 +37,7 @@ export default function ViewConsulta(){
                     <FlashList
                     data={DATA}
                     renderItem={({ item }) => 
-                        <View style={Style.box}>
+                        <TouchableOpacity style={Style.box} onPress={() => setVisibleModal(true)}>
                             <View style={Style.boxL}>
                                 <View style={Style.boxLUP}>
                                     <Text style={Style.text}>{item.nomePaciente}</Text>
@@ -53,11 +59,21 @@ export default function ViewConsulta(){
                                 
                             </View>
                             
-                        </View>
+                        </TouchableOpacity>
                     }
                     estimatedItemSize={200}
                     />
                 </View>
+
+                <Modal
+                visible={visibleModal}
+                transparent={true}
+                onRequestClose={ () => setVisibleModal(false)}
+                >
+                    <ActionModal
+                    handleClose={() => setVisibleModal(false)}
+                    />
+                </Modal>
         </View>
     )
 }

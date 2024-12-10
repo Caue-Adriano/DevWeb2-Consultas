@@ -1,11 +1,15 @@
 import React from "react";
 import { FlashList } from "@shopify/flash-list";
 import { Style } from "./styles";
+import { useState } from "react";
+import { ActionModal } from "./actionModal";
 
 import {
     Text,
     View,
-    StatusBar
+    StatusBar,
+    Modal,
+    TouchableOpacity
 } from 'react-native';
 
 export default function ViewMedico(){
@@ -23,13 +27,15 @@ export default function ViewMedico(){
         },
       ];
 
+      const [visibleModal, setVisibleModal] = useState(false);
+
     return (
         <View style={Style.container}>
                 <View style={Style.lista}>
                     <FlashList
                     data={DATA}
                     renderItem={({ item }) => 
-                        <View style={Style.box}>
+                        <TouchableOpacity style={Style.box} onPress={() => setVisibleModal(true)}>
                             <View style={Style.boxL}>
                                 <View style={Style.boxLUP}>
                                     <Text style={Style.text} numberOfLines={1} ellipsizeMode="tail">{item.nome}</Text>
@@ -52,11 +58,21 @@ export default function ViewMedico(){
                                 
                             </View>
                             
-                        </View>
+                        </TouchableOpacity>
                     }
                     estimatedItemSize={200}
                     />
                 </View>
+
+                <Modal
+                visible={visibleModal}
+                transparent={true}
+                onRequestClose={ () => setVisibleModal(false)}
+                >
+                    <ActionModal
+                    handleClose={() => setVisibleModal(false)}
+                    />
+                </Modal>
         </View>
     )
 }
