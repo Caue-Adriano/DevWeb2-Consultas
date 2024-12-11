@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Style } from "./styles";
 import { TextInputMask } from 'react-native-masked-text';
 import axios from 'axios';
+import { Backend } from "../../../App";
 import {
     Text,
     View,
@@ -13,27 +14,28 @@ import {
 
 export default function Agendar() {
     const [data_consulta, setData] = useState('');
+    const [hora_consulta, setHora] = useState('');
     const [doctor_id, setDoctor] = useState('');
     const [paciente_id, setPaciente] = useState('');
 
     const handleSubmit = async () => {
-        
-        if (!data_consulta || !doctor_id || !paciente_id) {
+        if (!data_consulta || !hora_consulta || !doctor_id || !paciente_id) {
             Alert.alert('Erro', 'Por favor, preencha todos os campos.');
             return;
         }
 
         try {
-            
             const [day, month, year] = data_consulta.split('/');
-            if (!day || !month || !year || isNaN(new Date(`${year}-${month}-${day}T10:00:00Z`).getTime())) {
-                Alert.alert('Erro', 'Data inválida.');
+            const [hours, minutes] = hora_consulta.split(':'); 
+
+            if (!day || !month || !year || isNaN(new Date(`${year}-${month}-${day}T${hours}:${minutes}:00Z`).getTime())) {
+                Alert.alert('Erro', 'Data ou hora inválida.');
                 return;
             }
 
-            const formattedDate = `${year}-${month}-${day}T10:00:00Z`;
+            const formattedDate = `${year}-${month}-${day}T${hours}:${minutes}:00Z`;
 
-            const response = await axios.post('http://192.168.0.6:4000/consulta', {
+            const response = await axios.post(`${Backend}/consulta`, {
                 data_consulta: formattedDate,
                 doctor_id: Number(doctor_id),
                 paciente_id: Number(paciente_id),
@@ -43,7 +45,7 @@ export default function Agendar() {
                 Alert.alert('Sucesso', 'Agendamento salvo com sucesso');
             }
         } catch (error) {
-            console.error("Erro ao enviar dados:", error); // Registro do erro para depuração
+            console.error("Erro ao enviar dados:", error);
             Alert.alert('Erro', 'Falha ao salvar agendamento');
         }
     };
@@ -74,6 +76,16 @@ export default function Agendar() {
                             value={data_consulta}
                             onChangeText={text => setData(text)}
                             placeholder="DD/MM/AAAA"
+                        />
+                    </View>
+                    <Text style={Style.titleText}>Hora</Text>
+                    <View style={Style.inputBox}>
+                        <TextInputMask
+                            type={'datetime'}
+                            options={{ format: 'HH:mm' }}
+                            value={hora_consulta}
+                            onChangeText={text => setHora(text)}
+                            placeholder="HH:mm"
                         />
                     </View>
                     <TouchableOpacity style={Style.saveButton} onPress={handleSubmit}>

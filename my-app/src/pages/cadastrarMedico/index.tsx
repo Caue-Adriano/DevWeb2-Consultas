@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useNavigation, NavigationProp } from '@react-navigation/native';
 import { TextInputMask } from 'react-native-masked-text';
 import axios from 'axios';
+import { Backend } from "../../../App";
 
 import {
     Text,
@@ -53,7 +54,7 @@ export default function CadastrarMedico() {
             }
             const formattedDate = `${year}-${month}-${day}T00:00:00Z`;
 
-            const response = await axios.post('http://192.168.0.6:4000/medico', {
+            const response = await axios.post(`${Backend}/medico`, {
                 nome,
                 sexo: sexo === 'Masculino' ? 0 : 1, 
                 cpf,
