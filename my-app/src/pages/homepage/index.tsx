@@ -1,5 +1,6 @@
 import React from "react";
 import { useNavigation,NavigationProp } from '@react-navigation/native'
+import axios from "axios";
 
 import {
     Text,
@@ -17,6 +18,15 @@ import VisualizarConsultaIcon from '../../assets/buttonsVisualizarConsultaIcon.p
 
  export default function Homepage(){
     const navigation = useNavigation<NavigationProp<any>>();
+
+    async function testeconexao() {
+        await axios.get(`http://192.168.0.6:4000/`).then((response) =>{
+            alert(response.data)
+          }).catch((err)=>{
+            alert(err.data)
+          })
+        
+    }
 
     return (
         <View style={Style.container}>
