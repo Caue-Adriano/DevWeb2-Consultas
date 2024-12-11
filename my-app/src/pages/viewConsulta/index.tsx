@@ -1,79 +1,90 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { FlashList } from "@shopify/flash-list";
 import { Style } from "./styles";
-import { ActionModal } from "./actionModal";
-import { useState } from "react";
-
+import axios from "axios";
+import { Backend } from "../../../App";
+import {ActionModal} from './ActionModal';
 import {
     Text,
     View,
-    StatusBar,
-    TouchableOpacity,
-    Modal
+    Modal,
+    TouchableOpacity
 } from 'react-native';
 
-export default function ViewConsulta(){
+export default function ViewConsulta() {
+    const [data, setData] = useState([]);
+    const [modalVisible, setModalVisible] = useState(false);
+    const [selectedId, setSelectedId] = useState(null);
 
-    const DATA = [
-        {
-          nomePaciente: "Cauê de Freitas Adriano",
-          nomeMedico: "Dr. Luiz Oliveira",
-          data: "05/01/2025",
-          hora: "14:30"
-        },
-        {
-          nomePaciente: "Aline Nunes",
-          nomeMedico: "Dr. Luiz Oliveira",
-          data: "05/01/2025",
-          hora: "14:35"
-        },
-      ];
-    
-    const [visibleModal, setVisibleModal] = useState(false);
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const response = await axios.get(`${Backend}/consulta/list`);
+                setData(response.data);
+            } catch (error) {
+                console.error("Erro ao buscar dados: ", error);
+            }
+        };
+
+        fetchData();
+    }, []);
+
+    const handleOpenModal = (id) => {
+        setSelectedId(id);
+        setModalVisible(true);
+    };
+
+    const handleCloseModal = () => {
+        setModalVisible(false);
+        setSelectedId(null);
+    };
 
     return (
         <View style={Style.container}>
-                <View style={Style.lista}>
-                    <FlashList
-                    data={DATA}
-                    renderItem={({ item }) => 
-                        <TouchableOpacity style={Style.box} onPress={() => setVisibleModal(true)}>
-                            <View style={Style.boxL}>
-                                <View style={Style.boxLUP}>
-                                    <Text style={Style.text}>{item.nomePaciente}</Text>
-                                    <Text style={Style.textGray}>{item.nomeMedico}</Text>
+            <View style={Style.lista}>
+                <FlashList
+                    data={data}
+                    renderItem={({ item }) => {
+                        const dataObj = new Date(item.data_consulta);
+                        const data = dataObj.toLocaleDateString('pt-BR'); 
+                        const hora = dataObj.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit', timeZone: 'America/Sao_Paulo'}); 
+                        return (
+                            <TouchableOpacity onPress={() => handleOpenModal(item.id)}>
+                                <View style={Style.box}>
+                                    <View style={Style.boxL}>
+                                        <View style={Style.boxLUP}>
+                                            <Text style={Style.text}>Paciente: {item.paciente_id}</Text>
+                                            <Text style={Style.textGray}>Médico: {item.doctor_id}</Text>
+                                        </View>
+                                        <View style={Style.boxLDown}>
+                                            <Text style={Style.textGray}>Data</Text>
+                                            <Text style={Style.text}>{data}</Text>
+                                        </View>
+                                    </View>
+                                    <View style={Style.boxR}>
+                                        <View style={Style.boxRUP}>
+                                            <Text style={Style.text}>ID: {item.id}</Text>
+                                        </View>
+                                        <View style={Style.boxRDown}>
+                                            <Text style={Style.textGray}>Horário:</Text>
+                                            <Text style={Style.text}>{hora}</Text>
+                                        </View>
+                                    </View>
                                 </View>
-                                <View style={Style.boxLDown}>
-                                    <Text style={Style.textGray}>Data</Text>
-                                    <Text style={Style.text}>{item.data}</Text>
-                                </View>
-                            </View>
-                            <View style={Style.boxR}>
-                                <View style={Style.boxRUP}>
-                                    <Text style={Style.text}>ID</Text>
-                                </View>
-                                <View style={Style.boxRDown}>
-                                    <Text style={Style.textGray}>Horário:</Text>
-                                    <Text style={Style.text}>{item.hora}</Text>
-                                </View>
-                                
-                            </View>
-                            
-                        </TouchableOpacity>
-                    }
+                            </TouchableOpacity>
+                        );
+                    }}
                     estimatedItemSize={200}
-                    />
-                </View>
-
-                <Modal
-                visible={visibleModal}
+                />
+            </View>
+            <Modal
+                animationType="slide"
                 transparent={true}
-                onRequestClose={ () => setVisibleModal(false)}
-                >
-                    <ActionModal
-                    handleClose={() => setVisibleModal(false)}
-                    />
-                </Modal>
+                visible={modalVisible}
+                onRequestClose={handleCloseModal}
+            >
+                <ActionModal handleClose={handleCloseModal} id={selectedId} />
+            </Modal>
         </View>
-    )
+    );
 }
