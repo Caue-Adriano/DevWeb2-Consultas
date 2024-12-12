@@ -96,8 +96,8 @@ export default function Agendar() {
                 </View>
             </ScrollView>
             <TouchableOpacity style={Style.homeButton} onPress={() => navigation.navigate("homepage")}>
-                    <Text style={Style.homeText}>Home</Text>
-                </TouchableOpacity>
+                <Text style={Style.homeText}>Home</Text>
+            </TouchableOpacity>
         </View>
     );
 }

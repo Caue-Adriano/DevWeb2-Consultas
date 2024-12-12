@@ -228,6 +228,9 @@ export default function CadastrarMedico() {
                         <TouchableOpacity style={Style.botton} onPress={handleSubmit}>
                             <Text style={Style.textBotton}>Salvar</Text>
                         </TouchableOpacity>
+                        <TouchableOpacity style={Style.homeButton} onPress={() => navigation.navigate("homepage")}>
+                            <Text style={Style.homeText}>Home</Text>
+                        </TouchableOpacity>
                     </View>
                 </View>
             </View>

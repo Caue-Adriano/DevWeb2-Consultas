@@ -155,7 +155,9 @@ export const Style = StyleSheet.create({
     boxBotton:{
         height:100,
         width:'100%',
-        alignItems: 'center'
+        alignItems: 'center',
+        flexDirection:"row-reverse",
+        justifyContent:'space-between'
     },
     botton:{
         width: 100,
@@ -188,7 +190,6 @@ export const Style = StyleSheet.create({
         height: 39,
         backgroundColor:'white',
         borderRadius: 10,
-        marginTop: -50,
         display:'flex',
         justifyContent:'center',
         alignContent:'center',
@@ -209,6 +210,4 @@ export const Style = StyleSheet.create({
          color:'black',
          textAlign:'center'
      }
-
-
 })

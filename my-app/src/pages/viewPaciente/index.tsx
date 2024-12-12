@@ -107,10 +107,20 @@ export default function ViewPaciente(){
                 transparent={true}
                 onRequestClose={ () => setVisibleModal(false)}
                 >
-                    <ActionModal 
-                    id={selectedId}
-                    handleClose={() => handleCloseModal()}
-                    />
+                    <TouchableOpacity
+                        style={{backgroundColor: '#00000076',
+                            flex: 1,
+                            justifyContent: 'center',
+                            paddingTop: 30,
+                        }}
+                        activeOpacity={1}
+                        onPressOut={() => handleCloseModal()}
+                    >
+                        <ActionModal 
+                        id={selectedId}
+                        handleClose={() => handleCloseModal()}
+                        />
+                    </TouchableOpacity>
                 </Modal>
         </View>
     )

@@ -3,9 +3,9 @@ import { StyleSheet } from "react-native";
 export const Style = StyleSheet.create({
     container:{
         flex:1,
-        alignItems:'center',
         justifyContent:'center',
         padding:20,
+        paddingTop:50,
         backgroundColor: '#89CA5B'
     },
     box:{
@@ -67,6 +67,7 @@ export const Style = StyleSheet.create({
         display:'flex',
         justifyContent:'center',
         alignContent:'center',
+        alignSelf:"center",
     
         shadowColor: "#000",
          shadowOffset: {

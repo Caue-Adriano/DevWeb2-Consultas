@@ -114,8 +114,8 @@ export default function ViewMedico(){
                                 </View>
                                 <View style={Style.boxRDown}>
                                     <Text style={Style.textGray}>Especialidades:</Text>
-                                    <Text style={Style.text} numberOfLines={1} ellipsizeMode="tail">Geriatra</Text>
-                                    <Text style={Style.text} numberOfLines={1} ellipsizeMode="tail">Cardiologista</Text>
+                                    <Text style={Style.text} numberOfLines={1} ellipsizeMode="tail">{item.especialidade_1}</Text>
+                                    <Text style={Style.text} numberOfLines={1} ellipsizeMode="tail">{item.especialidade_2}</Text>
                                 </View>
                                 
                             </View>
@@ -134,10 +134,20 @@ export default function ViewMedico(){
                 transparent={true}
                 onRequestClose={ () => setVisibleModal(false)}
                 >
-                    <ActionModal
-                    id={selectedId}
-                    handleClose={() => handleCloseModal()}
-                    />
+                    <TouchableOpacity
+                        style={{backgroundColor: '#00000076',
+                            flex: 1,
+                            justifyContent: 'center',
+                            paddingTop: 30,
+                        }}
+                        activeOpacity={1}
+                        onPressOut={() => handleCloseModal()}
+                    >
+                        <ActionModal
+                        id={selectedId}
+                        handleClose={() => handleCloseModal()}
+                        />
+                    </TouchableOpacity>
                 </Modal>
         </View>
     )

@@ -117,7 +117,8 @@ export const Style = StyleSheet.create({
         height:100,
         width:'100%',
         alignItems: 'center',
-       justifyContent: 'center'
+       justifyContent: "space-between",
+       flexDirection:"row-reverse"
     },
     botton:{
         width: 100,
@@ -150,7 +151,6 @@ export const Style = StyleSheet.create({
         height: 39,
         backgroundColor:'white',
         borderRadius: 10,
-        marginTop: -50,
         display:'flex',
         justifyContent:'center',
         alignContent:'center',

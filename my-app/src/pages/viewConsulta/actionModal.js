@@ -108,7 +108,7 @@ export function ActionModal({ handleClose, id }) {
     };
 
     return (
-        <ScrollView style={{flex:1}}>
+        <ScrollView>
             <View style={Style.container}>
                 <View style={Style.box}>
                     <Text style={Style.titleText}>ID do paciente</Text>
@@ -154,7 +154,6 @@ export function ActionModal({ handleClose, id }) {
 
 const Style = StyleSheet.create({ 
     container:{
-        flex:1,
         padding:20
     },
     box:{

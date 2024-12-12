@@ -101,9 +101,19 @@ export default function ViewConsulta() {
                 animationType="slide"
                 transparent={true}
                 visible={modalVisible}
-                onRequestClose={handleCloseModal}
+                onRequestClose={()=>handleCloseModal()}
             >
-                <ActionModal handleClose={handleCloseModal} id={selectedId} />
+                <TouchableOpacity
+                    style={{backgroundColor: '#00000076',
+                        flex: 1,
+                        justifyContent: 'center',
+                        paddingTop: 30,
+                    }}
+                    activeOpacity={1}
+                    onPressOut={() => handleCloseModal()}
+                >
+                    <ActionModal handleClose={handleCloseModal} id={selectedId} />
+                </TouchableOpacity>
             </Modal>
         </View>
     );

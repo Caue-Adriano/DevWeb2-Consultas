@@ -139,7 +139,7 @@ export function ActionModal( { handleClose, id } ) {
     };
 
     return (
-        <ScrollView style={{flex:1}}>
+        <ScrollView>
             <View style={Style.container}>
                 <View style={Style.box}>
 
