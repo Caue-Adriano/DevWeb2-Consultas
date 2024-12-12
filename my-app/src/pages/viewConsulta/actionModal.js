@@ -14,47 +14,73 @@ import {
 
 export function ActionModal({ handleClose, id }) {
     const [data_consulta, setData] = useState('');
-    const [doctor_id, setDoctor] = useState('');
-    const [paciente_id, setPaciente] = useState('');
+    const [doctor_id, setDoctor] = useState();
+    const [paciente_id, setPaciente] = useState();
+    const [hora_consulta, setHora] = useState('');
 
     useEffect(() => {
-        const fetchData = async () => {
-            if (!id) {
-                console.log("ID não fornecido.");
-                return;
-            }
-            console.log("ID recebido:", id);
-            try {
-                const response = await axios.get(`${Backend}/consulta/${id}`);
-                console.log('Dados da consulta:', response.data);  // Log para depuração
-                const consulta = response.data;
-
-                if (consulta.data_consulta) {
-                    const data = new Date(consulta.data_consulta);
-                    const dataFormatada = `${String(data.getDate()).padStart(2, '0')}/${String(data.getMonth() + 1).padStart(2, '0')}/${data.getFullYear()}`;
-                    setData(dataFormatada);
-                } else {
-                    console.log('Data da consulta não encontrada.');
-                    setData('');
-                }
-
-                setDoctor(consulta.doctor_id ? consulta.doctor_id.toString() : '');
-                setPaciente(consulta.paciente_id ? consulta.paciente_id.toString() : '');
-            } catch (error) {
-                console.error('Erro ao carregar dados da consulta:', error);
-                Alert.alert('Erro', 'Falha ao carregar dados da consulta');
-            }
-        };
         fetchData();
-    }, [id]);
+    }, []);
+
+    const fetchData = async () => {
+        if (!id) {
+            console.log("ID não fornecido.");
+            return;
+        }
+        console.log("ID recebido:", id);
+        try {
+            const response = await axios.get(`${Backend}/consulta/${id}`);
+            console.log('Dados da consulta:', response.data);  // Log para depuração
+            const consulta = response.data.consulta;
+
+            if (!!consulta) {
+                console.log(consulta)
+                const data = consulta.data_consulta;
+                const dataFormatada = data.split("T")[0].split('-');
+                const dia = dataFormatada[2]
+                const mes = dataFormatada[1]
+                const ano = dataFormatada[0]
+                const horaFormatada = data.split("T")[1];
+                console.log(consulta.doctor_id)
+                console.log(consulta.paciente_id.toString())
+                setData(`${dia}/${mes}/${ano}`);
+                setHora(horaFormatada);
+                setDoctor(consulta.doctor_id.toString());
+                setPaciente(consulta.paciente_id.toString());
+            } else {
+                console.log('Data da consulta não encontrada.');
+                setData('');
+            }
+
+            setDoctor(consulta.doctor_id ? consulta.doctor_id.toString() : '');
+            setPaciente(consulta.paciente_id ? consulta.paciente_id.toString() : '');
+        } catch (error) {
+            console.error('Erro ao carregar dados da consulta:', error);
+            Alert.alert('Erro', 'Falha ao carregar dados da consulta');
+        }
+    };
+    
 
     const handleSubmit = async () => {
+        if (!data_consulta || !hora_consulta || !doctor_id || !paciente_id) {
+            Alert.alert('Erro', 'Por favor, preencha todos os campos.');
+            return;
+        }
+
         try {
+            console.log(data_consulta)
             const [day, month, year] = data_consulta.split('/');
-            const dataISO = new Date(`${year}-${month}-${day}`).toISOString();
+            const [hours, minutes] = hora_consulta.split(':'); 
+
+            if (!day || !month || !year || isNaN(new Date(`${year}-${month}-${day}T${hours}:${minutes}:00Z`).getTime())) {
+                Alert.alert('Erro', 'Data ou hora inválida.');
+                return;
+            }
+
+            const formattedDate = `${year}-${month}-${day}T${hours}:${minutes}:00.000Z`;
 
             const response = await axios.put(`${Backend}/consulta/${id}`, {
-                data_consulta: dataISO,
+                data_consulta: formattedDate,
                 doctor_id: Number(doctor_id),
                 paciente_id: Number(paciente_id),
             });
@@ -82,7 +108,7 @@ export function ActionModal({ handleClose, id }) {
     };
 
     return (
-        <ScrollView style={{flex:1}}>
+        <ScrollView>
             <View style={Style.container}>
                 <View style={Style.box}>
                     <Text style={Style.titleText}>ID do paciente</Text>
@@ -104,7 +130,16 @@ export function ActionModal({ handleClose, id }) {
                             placeholder="DD/MM/AAAA"
                         />
                     </View>
-
+                    <Text style={Style.titleText}>Hora</Text>
+                    <View style={Style.inputBox}>
+                        <TextInputMask
+                            type={'datetime'}
+                            options={{ format: 'HH:mm' }}
+                            value={hora_consulta}
+                            onChangeText={text => setHora(text)}
+                            placeholder="HH:mm"
+                        />
+                    </View>
                     <TouchableOpacity style={Style.saveButton} onPress={handleSubmit}>
                         <Text style={Style.saveText}>Salvar</Text>
                     </TouchableOpacity>
@@ -119,7 +154,6 @@ export function ActionModal({ handleClose, id }) {
 
 const Style = StyleSheet.create({ 
     container:{
-        flex:1,
         padding:20
     },
     box:{

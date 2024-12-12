@@ -117,7 +117,8 @@ export const Style = StyleSheet.create({
         height:100,
         width:'100%',
         alignItems: 'center',
-       justifyContent: 'center'
+       justifyContent: "space-between",
+       flexDirection:"row-reverse"
     },
     botton:{
         width: 100,
@@ -144,7 +145,32 @@ export const Style = StyleSheet.create({
     },
     containerScroll: { 
         flex: 1
-    }
+    },
+    homeButton:{
+        width: 100,
+        height: 39,
+        backgroundColor:'white',
+        borderRadius: 10,
+        display:'flex',
+        justifyContent:'center',
+        alignContent:'center',
+    
+        shadowColor: "#000",
+         shadowOffset: {
+             width: 0,
+             height: 2,
+         },
+         shadowOpacity: 0.23,
+         shadowRadius: 2.62,
+    
+         elevation: 4,
+     },
+     homeText:{
+         fontWeight:'bold',
+         fontSize: 16,
+         color:'black',
+         textAlign:'center'
+     }
 
 
 })

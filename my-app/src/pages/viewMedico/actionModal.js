@@ -1,4 +1,6 @@
-import React, { useState } from "react"; 
+import React, { useState,useEffect } from "react"; 
+import axios from "axios";
+import { Backend } from "../../../App";
 // import { useNavigation, NavigationProp } from '@react-navigation/native';
 import { TextInputMask } from 'react-native-masked-text';
 
@@ -8,7 +10,8 @@ import {
     TextInput,
     Text,
     StyleSheet,
-    ScrollView
+    ScrollView,
+    Alert
 }
 from 'react-native'
 
@@ -21,7 +24,7 @@ const RadioButton = ({ label, selected, onPress }) =>
         </TouchableOpacity> 
 );
 
-export function ActionModal( { handleClose } ) {
+export function ActionModal( { handleClose, id } ) {
     
     const [sexo, setSexo] = useState('');
     const [cpf, setCpf] = useState('');
@@ -32,9 +35,111 @@ export function ActionModal( { handleClose } ) {
     const [estado, setEstado] = useState('');
     const [especialidade, setEspecialidade] = useState('');
     const [especialidade1, setEspecialidade1] = useState('');
+    const [nome, setNome] = useState("");
+    const [endereco, setEndereco] = useState('')
+
+    useEffect(() => {
+        fetchData();
+    }, []);
+
+    useEffect(() => {
+        fetchData();
+    }, []);
+
+    const fetchData = async () => {
+        if (!id) {
+            console.log("ID não fornecido.");
+            return;
+        }
+        console.log("ID recebido:", id);
+        try {
+            const response = await axios.get(`${Backend}/medico/${id}`);
+            console.log('Dados da medico:', response.data);  // Log para depuração
+            const doctor = response.data.doctor;
+
+            if (!!doctor) {
+                console.log(doctor)
+                const data = doctor.data_nascimento.toString().split("T")[0].split('-');
+                const dia = data[2]
+                const mes = data[1]
+                const ano = data[0]
+                setDataNascimento(`${dia}/${mes}/${ano}`);
+                setNome(doctor.nome)
+                setCpf(doctor.cpf)
+                setCrm(doctor.crm)
+                setTelefone(doctor.telefone)
+                setEndereco(doctor.endereco)
+                setEspecialidade(doctor.especialidade_1)
+                setEspecialidade1(doctor.especialidade_2)
+                setEstado(doctor.uf)
+                setEmail(doctor.email)
+                const sexoConvert = doctor.sexo==0? "Masculino":"Feminino"
+                setSexo(sexoConvert)
+            } else {
+                console.log('Data da doctor não encontrada.');
+                setDataNascimento('');
+            }
+        } catch (error) {
+            console.error('Erro ao carregar dados da doctor:', error);
+            Alert.alert('Erro', 'Falha ao carregar dados da doctor');
+        }
+    };
+    
+    const handleSubmit = async () => {
+            
+        if (!nome || !sexo || !cpf || !endereco || !dataNascimento || !telefone || !crm) {
+            Alert.alert('Erro', 'Por favor, preencha todos os campos obrigatórios.');
+            return;
+        }
+
+        try {
+            
+            const [day, month, year] = dataNascimento.split('/');
+            if (!day || !month || !year || isNaN(new Date(`${year}-${month}-${day}`).getTime())) {
+                Alert.alert('Erro', 'Data de nascimento inválida.');
+                return;
+            }
+            const formattedDate = `${year}-${month}-${day}T00:00:00.000Z`;
+
+            const response = await axios.put(`${Backend}/medico/${id}`, {
+                id,
+                nome,
+                sexo: sexo === 'Masculino' ? 0 : 1, 
+                cpf,
+                endereco,
+                data_nascimento: formattedDate,
+                telefone,
+                email,
+                crm,
+                uf: estado,
+                especialidade_1: especialidade,
+                especialidade_2: especialidade1,
+            });
+            if (response.status === 200) {
+                Alert.alert('Sucesso', 'Médico alterado com sucesso');
+                handleClose();
+            }
+        } catch (error) {
+            console.error('Erro ao alterar médico:', error);
+            Alert.alert('Erro', 'Falha ao alterar médico');
+        }
+    };
+
+    const handleDelete = async () => {
+        try {
+            const response = await axios.delete(`${Backend}/medico/${id}`);
+            if (response.status === 200) {
+                Alert.alert('Sucesso', 'Médico deletado com sucesso');
+                handleClose();
+            }
+        } catch (error) {
+            console.error('Erro ao deletar médico:', error);
+            Alert.alert('Erro', 'Falha ao deletar médico');
+        }
+    };
 
     return (
-        <ScrollView style={{flex:1}}>
+        <ScrollView>
             <View style={Style.container}>
                 <View style={Style.box}>
 
@@ -43,6 +148,8 @@ export function ActionModal( { handleClose } ) {
                         <View style={Style.boxInput}>
                             <TextInput 
                                 style={Style.input}
+                                value={nome}
+                                onChangeText={text => setNome(text)} 
                             />
                         </View>
                     </View>
@@ -50,15 +157,15 @@ export function ActionModal( { handleClose } ) {
                     <View style= {Style.sexo}>
                         <Text style={Style.titleText}>Sexo*</Text>
                         <View style={Style.radioGroup}>
-                            <RadioButton 
-                            label="Masculino" selected={sexo === 'Masculino'}
-                            onPress={() => setSexo('Masculino')} 
+                            <RadioButton
+                                label="Masculino" selected={sexo === 'Masculino'}
+                                onPress={() => setSexo('Masculino')}
                             />
-                            <RadioButton label="Feminino" 
-                            selected={sexo === 'Feminino'} 
-                            onPress={() => setSexo('Feminino')} 
+                            <RadioButton label="Feminino"
+                                selected={sexo === 'Feminino'}
+                                onPress={() => setSexo('Feminino')}
                             />
-                        </View>    
+                        </View>
                     </View>
 
                     <View style= {Style.cpf}>
@@ -77,6 +184,8 @@ export function ActionModal( { handleClose } ) {
                         <View style={Style.boxInput}>
                             <TextInput 
                                 style={Style.input}
+                                value={endereco}
+                                onChangeText={text => setEndereco(text)} 
                             />
                         </View>
                     </View>
@@ -181,14 +290,14 @@ export function ActionModal( { handleClose } ) {
                     <View style={Style.boxBotton}>
                         <TouchableOpacity 
                         style={Style.botton} 
-                        onPress={handleClose}
+                        onPress={handleSubmit}
                         >
                             <Text style={Style.textBotton}>Salvar</Text>
                         </TouchableOpacity>
 
                         <TouchableOpacity 
                         style={Style.bottonDelete} 
-                        onPress={handleClose}
+                        onPress={handleDelete}
                         >
                             <Text style={Style.textBotton}>Deletar</Text>
                         </TouchableOpacity>

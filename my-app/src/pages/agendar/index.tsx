@@ -11,12 +11,14 @@ import {
     ScrollView,
     Alert
 } from 'react-native';
+import { useNavigation, NavigationProp } from '@react-navigation/native';
 
 export default function Agendar() {
     const [data_consulta, setData] = useState('');
     const [hora_consulta, setHora] = useState('');
     const [doctor_id, setDoctor] = useState('');
     const [paciente_id, setPaciente] = useState('');
+    const navigation = useNavigation<NavigationProp<any>>();
 
     const handleSubmit = async () => {
         if (!data_consulta || !hora_consulta || !doctor_id || !paciente_id) {
@@ -41,7 +43,7 @@ export default function Agendar() {
                 paciente_id: Number(paciente_id),
             });
 
-            if (response.status === 201) {
+            if (response.status === 200) {
                 Alert.alert('Sucesso', 'Agendamento salvo com sucesso');
             }
         } catch (error) {
@@ -93,6 +95,9 @@ export default function Agendar() {
                     </TouchableOpacity>
                 </View>
             </ScrollView>
+            <TouchableOpacity style={Style.homeButton} onPress={() => navigation.navigate("homepage")}>
+                <Text style={Style.homeText}>Home</Text>
+            </TouchableOpacity>
         </View>
     );
 }

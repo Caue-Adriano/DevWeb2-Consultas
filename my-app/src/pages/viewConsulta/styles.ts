@@ -6,6 +6,7 @@ export const Style = StyleSheet.create({
         alignItems:'center',
         justifyContent:'center',
         padding:20,
+        paddingVertical:50,
         backgroundColor: '#89CA5B'
     },
     lista:{
@@ -63,5 +64,31 @@ export const Style = StyleSheet.create({
         fontWeight: 'bold',
         fontSize: 12,
         color:'#7E7E7E'
-    }
+    },
+    homeButton:{
+        width: 100,
+        height: 39,
+        backgroundColor:'white',
+        borderRadius: 10,
+        marginTop: -50,
+        display:'flex',
+        justifyContent:'center',
+        alignContent:'center',
+    
+        shadowColor: "#000",
+         shadowOffset: {
+             width: 0,
+             height: 2,
+         },
+         shadowOpacity: 0.23,
+         shadowRadius: 2.62,
+    
+         elevation: 4,
+     },
+     homeText:{
+         fontWeight:'bold',
+         fontSize: 16,
+         color:'black',
+         textAlign:'center'
+     }
 })

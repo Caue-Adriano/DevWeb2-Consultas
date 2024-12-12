@@ -3,7 +3,8 @@ import { FlashList } from "@shopify/flash-list";
 import { Style } from "./styles";
 import axios from "axios";
 import { Backend } from "../../../App";
-import {ActionModal} from './ActionModal';
+import { ActionModal } from "./actionModal";
+import { useNavigation, NavigationProp } from '@react-navigation/native';
 import {
     Text,
     View,
@@ -11,31 +12,44 @@ import {
     TouchableOpacity
 } from 'react-native';
 
+type consulta = {
+    data_consulta:Date,
+    doctor_id:number,
+    paciente_id:number,
+    id:number
+}
+
 export default function ViewConsulta() {
-    const [data, setData] = useState([]);
+    const [data, setData] = useState<consulta[]>([]);
     const [modalVisible, setModalVisible] = useState(false);
-    const [selectedId, setSelectedId] = useState(null);
+    const [selectedId, setSelectedId] = useState<number | null>();
+    const [refresh, setRefresh] = useState(false)
+    const navigation = useNavigation<NavigationProp<any>>();
 
     useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const response = await axios.get(`${Backend}/consulta/list`);
-                setData(response.data);
-            } catch (error) {
-                console.error("Erro ao buscar dados: ", error);
-            }
-        };
-
-        fetchData();
+       fetchData();
     }, []);
 
-    const handleOpenModal = (id) => {
+    useEffect(() => {
+        fetchData();
+     }, [refresh]);
+
+    const fetchData = async () => {
+        try {
+            const response = await axios.get(`${Backend}/consulta/list`);
+            setData(response.data);
+        } catch (error) {
+            console.error("Erro ao buscar dados: ", error);
+        }
+    };
+    const handleOpenModal = (id:number) => {
         setSelectedId(id);
         setModalVisible(true);
     };
 
     const handleCloseModal = () => {
         setModalVisible(false);
+        setRefresh(!refresh)
         setSelectedId(null);
     };
 
@@ -45,9 +59,12 @@ export default function ViewConsulta() {
                 <FlashList
                     data={data}
                     renderItem={({ item }) => {
-                        const dataObj = new Date(item.data_consulta);
-                        const data = dataObj.toLocaleDateString('pt-BR'); 
-                        const hora = dataObj.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit', timeZone: 'America/Sao_Paulo'}); 
+                        const dataObj = item.data_consulta.toString();
+                        const dataUnformated = dataObj.split("T")[0].split("-")
+                        const data =  `${dataUnformated[2]}/${dataUnformated[1]}/${dataUnformated[0]}`
+                        console.log(dataObj.split("T")[1])
+                        const horaUnformated = dataObj.split("T")[1].split(':')
+                        const hora = `${horaUnformated[0].toString()}:${horaUnformated[1].toString()}`; 
                         return (
                             <TouchableOpacity onPress={() => handleOpenModal(item.id)}>
                                 <View style={Style.box}>
@@ -77,13 +94,26 @@ export default function ViewConsulta() {
                     estimatedItemSize={200}
                 />
             </View>
+            <TouchableOpacity style={Style.homeButton} onPress={() => navigation.navigate("homepage")}>
+                    <Text style={Style.homeText}>Home</Text>
+                </TouchableOpacity>
             <Modal
                 animationType="slide"
                 transparent={true}
                 visible={modalVisible}
-                onRequestClose={handleCloseModal}
+                onRequestClose={()=>handleCloseModal()}
             >
-                <ActionModal handleClose={handleCloseModal} id={selectedId} />
+                <TouchableOpacity
+                    style={{backgroundColor: '#00000076',
+                        flex: 1,
+                        justifyContent: 'center',
+                        paddingTop: 30,
+                    }}
+                    activeOpacity={1}
+                    onPressOut={() => handleCloseModal()}
+                >
+                    <ActionModal handleClose={handleCloseModal} id={selectedId} />
+                </TouchableOpacity>
             </Modal>
         </View>
     );

@@ -1,4 +1,6 @@
-import React, { useState } from "react"; 
+import React, { useState,useEffect } from "react"; 
+import axios from "axios";
+import { Backend } from "../../../App";
 // import { useNavigation, NavigationProp } from '@react-navigation/native';
 import { TextInputMask } from 'react-native-masked-text';
 
@@ -8,7 +10,8 @@ import {
     TextInput,
     Text,
     StyleSheet,
-    ScrollView
+    ScrollView,
+    Alert
 }
 from 'react-native'
 
@@ -21,16 +24,120 @@ const RadioButton = ({ label, selected, onPress }) =>
         </TouchableOpacity> 
 );
 
-export function ActionModal( { handleClose } ) {  
-        const [sexo, setSexo] = useState('');
-        const [cpf, setCpf] = useState('');
-        const [dataNascimento, setDataNascimento] = useState('');
-        const [telefone, setTelefone] = useState('');
-        const [email, setEmail] = useState ('');
-        // const navigation = useNavigation<NavigationProp<any>>();
+export function ActionModal( { handleClose, id } ) {  
+    const [sexo, setSexo] = useState('');
+    const [cpf, setCpf] = useState('');
+    const [dataNascimento, setDataNascimento] = useState('');
+    const [telefone, setTelefone] = useState('');
+    const [email, setEmail] = useState ('');
+    const [nome, setNome] = useState('');
+    const [endereco, setEndereco] = useState('')
+    
+    // const navigation = useNavigation<NavigationProp<any>>();
+
+
+    useEffect(() => {
+        fetchData();
+    }, []);
+
+    const fetchData = async () => {
+        if (!id) {
+            console.log("ID não fornecido.");
+            return;
+        }
+        console.log("ID recebido:", id);
+        try {
+            const response = await axios.get(`${Backend}/paciente/${id}`);
+            console.log('Dados da paciente:', response.data);  // Log para depuração
+            const paciente = response.data.paciente;
+
+            if (!!paciente) {
+                console.log(paciente)
+                const data = paciente.data_nascimento.toString().split("T")[0].split('-');
+                const dia = data[2]
+                const mes = data[1]
+                const ano = data[0]
+                setDataNascimento(`${dia}/${mes}/${ano}`);
+                const sexoConvert = paciente.sexo==0? "Masculino":"Feminino"
+                setSexo(sexoConvert)
+                setNome(paciente.nome)
+                setEndereco(paciente.endereco)
+                setEmail(paciente.email)
+                setCpf(paciente.cpf)
+                setTelefone(paciente.telefone)
+            } else {
+                console.log('Data da paciente não encontrada.');
+                setDataNascimento('');
+            }
+        } catch (error) {
+            console.error('Erro ao carregar dados da paciente:', error);
+            Alert.alert('Erro', 'Falha ao carregar dados da paciente');
+        }
+    };
+
+    const handleSubmit = async () => {
+        if (!nome || !sexo || !cpf || !endereco || !dataNascimento || !telefone) {
+            Alert.alert('Erro', 'Por favor, preencha todos os campos obrigatórios.');
+            return;
+        }
+
+        try {
+            // Convertendo a data de nascimento para o formato ISO 8601
+            const [day, month, year] = dataNascimento.split('/');
+            if (!day || !month || !year || isNaN(new Date(`${year}-${month}-${day}`).getTime())) {
+                Alert.alert('Erro', 'Data de nascimento inválida.');
+                return;
+            }
+            const formattedDate = `${year}-${month}-${day}T00:00:00.000Z`;
+
+            const teste = {
+                id,
+                nome,
+                sexo: sexo === 'Masculino' ? 0 : 1, 
+                cpf,
+                endereco,
+                data_nascimento: formattedDate,
+                telefone,
+                email,
+            }
+
+            console.log("alteração para",teste)
+
+            const response = await axios.put(`${Backend}/paciente/${id}`, {
+                id,
+                nome,
+                sexo: sexo === 'Masculino' ? 0 : 1, 
+                cpf,
+                endereco,
+                data_nascimento: formattedDate,
+                telefone,
+                email,
+            });
+            if (response.status === 200) {
+                Alert.alert('Sucesso', 'Paciente alterado com sucesso');
+                handleClose();
+            }
+        } catch (error) {
+            console.error('Erro ao alterar paciente:', error);
+            Alert.alert('Erro', 'Falha ao alterar paciente');
+        }
+    };
+
+    const handleDelete = async () => {
+        try {
+            const response = await axios.delete(`${Backend}/paciente/${id}`);
+            if (response.status === 200) {
+                Alert.alert('Sucesso', 'Paciente deletado com sucesso');
+                handleClose();
+            }
+        } catch (error) {
+            console.error('Erro ao deletar Paciente:', error);
+            Alert.alert('Erro', 'Falha ao deletar Paciente');
+        }
+    };
 
     return (
-        <ScrollView style={{flex:1}}>
+        <ScrollView>
             <View style={Style.container}>
                 <View style={Style.box}>
 
@@ -40,6 +147,8 @@ export function ActionModal( { handleClose } ) {
                         <View style={Style.boxInput}>
                             <TextInput 
                                 style={Style.input}
+                                value={nome}
+                                onChangeText={text => setNome(text)} 
                             />
                         </View>
                     </View>
@@ -47,15 +156,15 @@ export function ActionModal( { handleClose } ) {
                     <View style= {Style.sexo}>
                         <Text style={Style.titleText}>Sexo*</Text>
                         <View style={Style.radioGroup}>
-                            <RadioButton 
-                            label="Masculino" selected={sexo === 'Masculino'}
-                            onPress={() => setSexo('Masculino')} 
+                            <RadioButton
+                                label="Masculino" selected={sexo === 'Masculino'}
+                                onPress={() => setSexo('Masculino')}
                             />
-                            <RadioButton label="Feminino" 
-                            selected={sexo === 'Feminino'} 
-                            onPress={() => setSexo('Feminino')} 
+                            <RadioButton label="Feminino"
+                                selected={sexo === 'Feminino'}
+                                onPress={() => setSexo('Feminino')}
                             />
-                        </View>    
+                        </View> 
                     </View>
 
                     <View style= {Style.cpf}>
@@ -74,6 +183,8 @@ export function ActionModal( { handleClose } ) {
                         <View style={Style.boxInput}>
                             <TextInput 
                                 style={Style.input}
+                                value={endereco}
+                                onChangeText={text => setEndereco(text)} 
                             />
                         </View>
                     </View>
@@ -126,14 +237,14 @@ export function ActionModal( { handleClose } ) {
                     <View style={Style.boxBotton}>
                         <TouchableOpacity 
                         style={Style.botton} 
-                        onPress={handleClose}
+                        onPress={handleSubmit}
                         >
                             <Text style={Style.textBotton}>Salvar</Text>
                         </TouchableOpacity>
 
                         <TouchableOpacity 
                         style={Style.bottonDelete} 
-                        onPress={handleClose}
+                        onPress={handleDelete}
                         >
                             <Text style={Style.textBotton}>Deletar</Text>
                         </TouchableOpacity>
