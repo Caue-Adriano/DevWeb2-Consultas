@@ -35,6 +35,8 @@ export function ActionModal( { handleClose, id } ) {
     const [estado, setEstado] = useState('');
     const [especialidade, setEspecialidade] = useState('');
     const [especialidade1, setEspecialidade1] = useState('');
+    const [nome, setNome] = useState("");
+    const [endereco, setEndereco] = useState('')
 
     useEffect(() => {
         fetchData();
@@ -51,31 +53,32 @@ export function ActionModal( { handleClose, id } ) {
         }
         console.log("ID recebido:", id);
         try {
-            const response = await axios.get(`${Backend}/doctor/${id}`);
+            const response = await axios.get(`${Backend}/medico/${id}`);
             console.log('Dados da medico:', response.data);  // Log para depuração
             const doctor = response.data.doctor;
 
             if (!!doctor) {
                 console.log(doctor)
-                const data = doctor.data_consulta;
-                const dataFormatada = data.split("T")[0].split('-');
-                const dia = dataFormatada[2]
-                const mes = dataFormatada[1]
-                const ano = dataFormatada[0]
-                const horaFormatada = data.split("T")[1];
-                console.log(doctor.doctor_id)
-                console.log(doctor.paciente_id.toString())
-                setData(`${dia}/${mes}/${ano}`);
-                setHora(horaFormatada);
-                setDoctor(doctor.doctor_id.toString());
-                setPaciente(doctor.paciente_id.toString());
+                const data = doctor.data_nascimento.toString().split("T")[0].split('-');
+                const dia = data[2]
+                const mes = data[1]
+                const ano = data[0]
+                setDataNascimento(`${dia}/${mes}/${ano}`);
+                setNome(doctor.nome)
+                setCpf(doctor.cpf)
+                setCrm(doctor.crm)
+                setTelefone(doctor.telefone)
+                setEndereco(doctor.endereco)
+                setEspecialidade(doctor.especialidade_1)
+                setEspecialidade1(doctor.especialidade_2)
+                setEstado(doctor.uf)
+                setEmail(doctor.email)
+                const sexoConvert = doctor.sexo==0? "Masculino":"Feminino"
+                setSexo(sexoConvert)
             } else {
                 console.log('Data da doctor não encontrada.');
-                setData('');
+                setDataNascimento('');
             }
-
-            setDoctor(doctor.doctor_id ? doctor.doctor_id.toString() : '');
-            setPaciente(doctor.paciente_id ? doctor.paciente_id.toString() : '');
         } catch (error) {
             console.error('Erro ao carregar dados da doctor:', error);
             Alert.alert('Erro', 'Falha ao carregar dados da doctor');
@@ -83,41 +86,48 @@ export function ActionModal( { handleClose, id } ) {
     };
     
     const handleSubmit = async () => {
-        if (!data_consulta || !hora_consulta || !doctor_id || !paciente_id) {
-            Alert.alert('Erro', 'Por favor, preencha todos os campos.');
+            
+        if (!nome || !sexo || !cpf || !endereco || !dataNascimento || !telefone || !crm) {
+            Alert.alert('Erro', 'Por favor, preencha todos os campos obrigatórios.');
             return;
         }
 
         try {
-            console.log(data_consulta)
-            const [day, month, year] = data_consulta.split('/');
-            const [hours, minutes] = hora_consulta.split(':'); 
-
-            if (!day || !month || !year || isNaN(new Date(`${year}-${month}-${day}T${hours}:${minutes}:00Z`).getTime())) {
-                Alert.alert('Erro', 'Data ou hora inválida.');
+            
+            const [day, month, year] = dataNascimento.split('/');
+            if (!day || !month || !year || isNaN(new Date(`${year}-${month}-${day}`).getTime())) {
+                Alert.alert('Erro', 'Data de nascimento inválida.');
                 return;
             }
+            const formattedDate = `${year}-${month}-${day}T00:00:00.000Z`;
 
-            const formattedDate = `${year}-${month}-${day}T${hours}:${minutes}:00.000Z`;
-
-            const response = await axios.put(`${Backend}/doctor/${id}`, {
-                data_consulta: formattedDate,
-                doctor_id: Number(doctor_id),
-                paciente_id: Number(paciente_id),
+            const response = await axios.put(`${Backend}/medico/${id}`, {
+                id,
+                nome,
+                sexo: sexo === 'Masculino' ? 0 : 1, 
+                cpf,
+                endereco,
+                data_nascimento: formattedDate,
+                telefone,
+                email,
+                crm,
+                uf: estado,
+                especialidade_1: especialidade,
+                especialidade_2: especialidade1,
             });
             if (response.status === 200) {
-                Alert.alert('Sucesso', 'Médico salvo com sucesso');
+                Alert.alert('Sucesso', 'Médico alterado com sucesso');
                 handleClose();
             }
         } catch (error) {
-            console.error('Erro ao salvar médico:', error);
-            Alert.alert('Erro', 'Falha ao salvar médico');
+            console.error('Erro ao alterar médico:', error);
+            Alert.alert('Erro', 'Falha ao alterar médico');
         }
     };
 
     const handleDelete = async () => {
         try {
-            const response = await axios.delete(`${Backend}/doctor/${id}`);
+            const response = await axios.delete(`${Backend}/medico/${id}`);
             if (response.status === 200) {
                 Alert.alert('Sucesso', 'Médico deletado com sucesso');
                 handleClose();
@@ -138,6 +148,8 @@ export function ActionModal( { handleClose, id } ) {
                         <View style={Style.boxInput}>
                             <TextInput 
                                 style={Style.input}
+                                value={nome}
+                                onChangeText={text => setNome(text)} 
                             />
                         </View>
                     </View>
@@ -172,6 +184,8 @@ export function ActionModal( { handleClose, id } ) {
                         <View style={Style.boxInput}>
                             <TextInput 
                                 style={Style.input}
+                                value={endereco}
+                                onChangeText={text => setEndereco(text)} 
                             />
                         </View>
                     </View>

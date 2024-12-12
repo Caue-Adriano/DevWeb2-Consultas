@@ -67,7 +67,7 @@ export function ActionModal( { handleClose, id } ) {
                 setTelefone(paciente.telefone)
             } else {
                 console.log('Data da paciente não encontrada.');
-                setData('');
+                setDataNascimento('');
             }
         } catch (error) {
             console.error('Erro ao carregar dados da paciente:', error);
