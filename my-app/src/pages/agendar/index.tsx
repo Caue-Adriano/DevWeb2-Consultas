@@ -37,7 +37,7 @@ export default function Agendar() {
 
             const formattedDate = `${year}-${month}-${day}T${hours}:${minutes}:00Z`;
 
-            const response = await axios.post(`${Backend}/consulta`, {
+            const response = await axios.post(`${Backend}/consulta/`, {
                 data_consulta: formattedDate,
                 doctor_id: Number(doctor_id),
                 paciente_id: Number(paciente_id),

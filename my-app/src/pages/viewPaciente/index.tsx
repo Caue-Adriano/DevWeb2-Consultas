@@ -114,7 +114,7 @@ export default function ViewPaciente(){
                             paddingTop: 30,
                         }}
                         activeOpacity={1}
-                        onPressOut={() => handleCloseModal()}
+                        // onPressOut={() => handleCloseModal()}
                     >
                         <ActionModal 
                         id={selectedId}

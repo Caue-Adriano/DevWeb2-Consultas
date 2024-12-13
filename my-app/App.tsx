@@ -16,7 +16,7 @@ export default function App() {
   );
 }
 
-export const Backend = "http://192.168.0.215:4000"
+export const Backend = "http://172.20.10.5:4000"
 
 const styles = StyleSheet.create({
   

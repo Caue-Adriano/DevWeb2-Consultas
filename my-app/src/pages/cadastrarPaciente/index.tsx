@@ -47,8 +47,18 @@ export default function CadastrarPaciente() {
                 Alert.alert('Erro', 'Data de nascimento inválida.');
                 return;
             }
-            const formattedDate = `${year}-${month}-${day}T00:00:00Z`;
+            const formattedDate = `${year}-${month}-${day}T00:00:00.000Z`;
 
+            const teste = {
+                nome,
+                sexo: sexo === 'Masculino' ? 0 : 1, 
+                cpf,
+                endereco,
+                data_nascimento: formattedDate,
+                telefone,
+                email,
+            }
+            console.log(teste)
             const response = await axios.post(`${Backend}/paciente`, {
                 nome,
                 sexo: sexo === 'Masculino' ? 0 : 1, 
@@ -59,7 +69,7 @@ export default function CadastrarPaciente() {
                 email,
             });
 
-            if (response.status === 201) {
+            if (response.status === 200) {
                 Alert.alert('Sucesso', 'Cadastro salvo com sucesso');
                 navigation.navigate("homepage");
             }
@@ -142,12 +152,12 @@ export default function CadastrarPaciente() {
                                 options={{
                                     maskType: 'BRL',
                                     withDDD: true,
-                                    dddMask: '(99) '
+                                    dddMask: '(99)'
                                 }}
                                 value={telefone}
                                 onChangeText={text => setTelefone(text)}
                                 style={Style.input}
-                                placeholder="(99) 99999-9999"
+                                placeholder="(99)99999-9999"
                             />
                         </View>
                     </View>

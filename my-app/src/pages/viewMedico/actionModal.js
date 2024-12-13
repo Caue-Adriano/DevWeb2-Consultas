@@ -211,12 +211,12 @@ export function ActionModal( { handleClose, id } ) {
                             options={{ 
                                 maskType: 'BRL', 
                                 withDDD: true, 
-                                dddMask: '(99) ' 
+                                dddMask: '(99)' 
                             }} 
                             value={telefone} 
                             onChangeText={text => setTelefone(text)} 
                             style={Style.input} 
-                            placeholder="(99) 99999-9999"
+                            placeholder="(99)99999-9999"
                             />
                         </View>
                     </View>

@@ -110,7 +110,7 @@ export default function ViewConsulta() {
                         paddingTop: 30,
                     }}
                     activeOpacity={1}
-                    onPressOut={() => handleCloseModal()}
+                    // onPressOut={() => handleCloseModal()}
                 >
                     <ActionModal handleClose={handleCloseModal} id={selectedId} />
                 </TouchableOpacity>

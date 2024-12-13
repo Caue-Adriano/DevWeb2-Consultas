@@ -141,7 +141,7 @@ export default function ViewMedico(){
                             paddingTop: 30,
                         }}
                         activeOpacity={1}
-                        onPressOut={() => handleCloseModal()}
+                        // onPressOut={() => handleCloseModal()}
                     >
                         <ActionModal
                         id={selectedId}

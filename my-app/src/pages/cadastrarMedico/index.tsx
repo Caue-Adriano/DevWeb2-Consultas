@@ -68,7 +68,7 @@ export default function CadastrarMedico() {
                 especialidade_2: especialidade1,
             });
 
-            if (response.status === 201) {
+            if (response.status === 200) {
                 Alert.alert('Sucesso', 'Cadastro salvo com sucesso');
                 navigation.navigate("homepage");
             }
@@ -150,12 +150,12 @@ export default function CadastrarMedico() {
                                 options={{
                                     maskType: 'BRL',
                                     withDDD: true,
-                                    dddMask: '(99) '
+                                    dddMask: '(99)'
                                 }}
                                 value={telefone}
                                 onChangeText={text => setTelefone(text)}
                                 style={Style.input}
-                                placeholder="(99) 99999-9999"
+                                placeholder="(99)99999-9999"
                             />
                         </View>
                     </View>
